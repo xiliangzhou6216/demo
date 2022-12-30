@@ -1,0 +1,152 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button id="btn">点击</button>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script>
+        var btn=document.querySelector("#btn")
+        var fn1=()=>console.log(8888888888)
+        var fn2=()=>{
+            Promise.resolve().then(()=>{
+                console.log('微观2')
+            })
+            console.log('监听2')
+        }
+        var fn3=()=>{
+            Promise.resolve().then(()=>{
+                console.log('微观3')
+            })
+            console.log('监听3')
+        }
+        btn.addEventListener("ceshi",fn1)
+        btn.addEventListener("click",fn2)                                                                                                                              
+        btn.addEventListener("click",fn3)
+
+        var ev=new Event('ceshi');
+        // btn.click()
+        btn.dispatchEvent(ev)  
+        console.log( ev,6666) 
+        
+        /**
+         * 
+         *    
+         * 
+         * 
+         * 
+        */
+       
+         //目标者类
+        class Subject{
+            constructor(){
+                this.list=[]
+            }
+            add(o){
+                this.list.push(o)
+            }
+            notify(...args){
+                for (const item of this.list) {
+                    console.log(...args)
+                    item.update(...args,456)
+                }
+            }
+        }
+
+         //目标者类
+        class Observer{
+            constructor(name){
+                this.name=name
+            }
+            update(...args){
+                console.log(`更新了${this.name}`,args)
+            }
+
+        }
+
+        var sub= new Subject()
+        var obs1=new Observer("AAAAAAA")
+        var obs2=new Observer("BBBBBBB")
+        sub.add(obs1)
+        sub.add(obs2)
+        // sub.notify(123)
+
+
+    /**
+     * 1. 创建一个对象或者数组（缓存对象）
+     * 2. on方法把回调函数添加缓存队列中
+     * 3. emit方法 触发缓存队列中对应key中的函数
+     * 
+     * 
+    */
+        //发布订阅
+        class Publish{
+            constructor(){
+                this.topics =[]                    
+            }
+            on(key,fn){
+                if(!this.topics[key]){
+                    this.topics[key]=[]
+                }
+                this.topics[key].push(fn)
+            }
+            emit(key,...args){
+                let fns=this.topics[key]
+                if(!fns||fns.length===0){
+                    return
+                }
+                fns.forEach(item=>{
+                    item.apply(this,args)
+                }) 
+            }
+        }
+
+        var pub= new Publish()
+        pub.on('thing',()=>{
+            console.log(1111)
+        })
+        pub.on('thing',()=>{
+            console.log(22222)
+        })
+        pub.on('thing',(data)=>{
+            console.log(`接受---------${data}`)
+        })
+        pub.on('thing1',(data)=>{
+            console.log(44444)
+        })
+        // pub.emit('thing2','44444-444444')
+        // pub.emit('thing','发送数据')
+        // console.log(pub)
+
+
+        class Promise1{
+            constructor(fn){
+                this.callback=[]
+                fn(this.resolve.bind(this))
+            }
+            resolve(value){
+                setTimeout(()=>{
+                    this.callback.forEach(item=>{
+                        console.log(item,1111)
+                        item()
+                    })
+                },0)
+                
+            }
+            then(func){
+                this.callback.push(func)
+            }
+        }
+       var p= new Promise1(res=>{
+                    res(1000)
+                })
+       p.then(() => console.log(1));
+       
+
+    </script>
+    
+</body>
+</html>

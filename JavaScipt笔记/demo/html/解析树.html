@@ -1,0 +1,66 @@
+<!--
+ * @Description: 
+ * @Version: 2.0
+ * @Autor: xiliang
+ * @Date: 2021-04-29 09:51:07
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-06-18 18:03:29
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  1111
+  <body>
+    <script src="https://unpkg.com/tree-tool/dist/index.js"></script>
+    <script type="module">
+      import {list,tree} from './mock.js'
+      import treeHandler from './index.js'
+      // const trees = require('./index.js')
+      
+      console.log(list,tree)
+
+
+      const DEFAULT_CONFIG = {
+        id: 'id',
+        children: 'children',
+        parentId: 'parentId'
+      }
+
+      const getConfig = config => Object.assign({}, DEFAULT_CONFIG, config)
+
+      function fromList(list, config = {}) {
+          // config = getConfig(config)
+          const nodeMap = new Map(), result = [], { id, children, parentId } = DEFAULT_CONFIG
+          console.log()
+          for (const node of list) {
+            node[children] = node[children] || []
+            nodeMap.set(node[id], node)
+          }
+          console.log(nodeMap)
+
+          for (const node of list) {
+            const parent = nodeMap.get(node[parentId])
+            const config = {
+              key: node.id,
+              children: node.children,
+              value: node.title
+            }
+
+          
+            ;(parent ? parent.children : result).push(config)
+          }
+          return result
+        }
+
+
+      let result = fromList(list)
+      console.log(result)
+
+
+    </script> 
+  </body>
+</html>

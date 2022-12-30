@@ -1,0 +1,61 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+</head>
+<body>
+  <ul id="canvas"></ul>
+
+<!-- 有对 promise的依赖，如不考虑兼容，可尝试删除该依赖 -->
+<script src="./promise.js"></script>
+<!-- 将上方下载的文件放置于js文件夹下 -->
+<script src="./qr-code-with-logo.js"></script>
+<script>
+
+  // var array=[... Array(10000).keys()]
+  // for (let index = 0; index < array.length; index++) {
+  //       QrCodeWithLogo.toCanvas({
+  //       canvas: document.createElement('canvas'), // 换成你的canvas节点
+  //       content: 'https://cdn.blog.cloudself.cn/',
+  //       width: 380,
+  //       logo: {
+  //         src: 'https://cdn.blog.cloudself.cn/images/avatar.png',
+  //       }
+  //     }).then(_ => console.log('success',_))
+    
+  // }
+
+
+  setTimeout(() => {
+        const total = 100000 // 插入十万条数据
+        const once = 20 // 一次插入 20 条，如果觉得性能不好就减少
+        const loopCount = total / once   // 渲染数据总共需要几次
+        let countOfRender = 0
+        let ul = document.querySelector("ul");
+        function add() {
+            // 优化性能，插入不会造成回流
+            const fragment = document.createDocumentFragment();
+            for (let i = 0; i < once; i++) {
+                const li = document.createElement("li");
+                li.innerText = Math.floor(Math.random() * total);
+                fragment.appendChild(li);
+            }
+            ul.appendChild(fragment);
+            countOfRender += 1;
+            loop();
+        }
+        function loop() {
+            if (countOfRender < loopCount) {
+                window.requestAnimationFrame(add);
+            }
+        }
+        loop();
+    }, 0);
+ 
+</script>
+  
+</body>
+</html>
